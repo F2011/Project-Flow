@@ -11,7 +11,7 @@
     ),
   ),
   type-of-thesis: "Programmentwurf",
-  at-university: false, // if true the company name on the title page and the confidentiality statement are hidden
+  at-university: true, // if true the company name on the title page and the confidentiality statement are hidden
   date: datetime.today(),
   // glossary: glossary-entries, // displays the glossary terms defined in "glossary.typ"
   language: "de", // en, de
@@ -25,6 +25,7 @@
   // for more options check the package documentation (https://typst.app/universe/package/clean-dhbw)
 )
 
+#include "00-themenanmeldung.typ"
 #include "01-ddd.typ"
 #include "02-clean_architecture.typ"
 #include "03-programming_principles.typ"

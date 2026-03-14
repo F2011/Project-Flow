@@ -11,7 +11,7 @@
   language: none,
   at-university: none,
   type-of-thesis: none,
-  show-declaration-of-authorship: true,
+  show-declaration-of-authorship: false,
   show-table-of-contents: true,
   show-abstract: true,
   abstract: none,
