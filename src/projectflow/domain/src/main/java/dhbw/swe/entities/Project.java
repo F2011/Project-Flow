@@ -57,7 +57,7 @@ public class Project {
 
     public boolean hasResource(Resource resource, LocalDateTime from, LocalDateTime to) {
         return reservations.stream().filter(r -> r.getResource().equals(resource))
-                .noneMatch(r -> r.getTimeRange().overlaps(new TimeRange(from, to)));
+                .anyMatch(r -> r.getTimeRange().overlaps(new TimeRange(from, to)));
     }
 
     public UUID getId() {
