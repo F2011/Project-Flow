@@ -34,4 +34,14 @@ public final class Reservation implements Comparable<Reservation> {
         }
         return startCompare;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Reservation other))
+            return false;
+        return resource.equals(other.resource)
+                && timeRange.getStart().equals(other.timeRange.getStart())
+                && timeRange.getEnd().equals(other.timeRange.getEnd())
+                && project.equals(other.project);
+    }
 }
