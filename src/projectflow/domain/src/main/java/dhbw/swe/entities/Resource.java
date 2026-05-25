@@ -71,4 +71,9 @@ public abstract class Resource {
             return false;
         return id.equals(resource.id);
     }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

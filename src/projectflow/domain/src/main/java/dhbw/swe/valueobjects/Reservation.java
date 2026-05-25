@@ -44,4 +44,9 @@ public final class Reservation implements Comparable<Reservation> {
                 && timeRange.getEnd().equals(other.timeRange.getEnd())
                 && project.equals(other.project);
     }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(resource, timeRange.getStart(), timeRange.getEnd(), project);
+    }
 }
