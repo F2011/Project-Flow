@@ -79,4 +79,12 @@ public class Project {
     public List<Project> getSubProjects() {
         return Collections.unmodifiableList(subProjects);
     }
+
+    public void addRequiredQualification(Qualification qualification) {
+        requiredQualifications.add(qualification);
+    }
+
+    public Set<Qualification> getRequiredQualifications() {
+        return Collections.unmodifiableSet(requiredQualifications);
+    }
 }
