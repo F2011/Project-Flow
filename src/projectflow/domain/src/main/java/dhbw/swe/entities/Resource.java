@@ -3,6 +3,7 @@ package dhbw.swe.entities;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import dhbw.swe.valueobjects.Money;
 import dhbw.swe.valueobjects.Reservation;
 import dhbw.swe.valueobjects.TimeRange;
 
@@ -64,6 +65,8 @@ public abstract class Resource {
     public void removeReservation(Reservation reservation) {
         reservations.remove(reservation);
     }
+
+    public abstract Money getCostsPerHour();
 
     @Override
     public boolean equals(Object o) {
