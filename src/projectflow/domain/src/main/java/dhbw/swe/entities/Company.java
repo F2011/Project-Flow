@@ -24,7 +24,10 @@ public class Company {
     }
 
     public Project createProject(String name, Money projectMoney, TimeRange duration) {
-        if (budget.compareTo(projectMoney) < 0) {
+        Money allocated = projects.stream()
+                .map(Project::getBudget)
+                .reduce(projectMoney, Money::add);
+        if (allocated.compareTo(budget) > 0) {
             throw new IllegalArgumentException("project budget exceeds company budget");
         }
         Project project = new Project(UUID.randomUUID(), name, projectMoney, duration);
