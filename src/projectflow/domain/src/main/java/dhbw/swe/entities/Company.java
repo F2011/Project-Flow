@@ -55,7 +55,7 @@ public class Company {
         return name;
     }
 
-    public Money getMoney() {
+    public Money getBudget() {
         return budget;
     }
 
