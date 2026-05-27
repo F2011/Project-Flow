@@ -72,6 +72,10 @@ public class Project {
         return budget;
     }
 
+    public TimeRange getDuration() {
+        return duration;
+    }
+
     public Set<Reservation> getReservations() {
         return Collections.unmodifiableSet(reservations);
     }

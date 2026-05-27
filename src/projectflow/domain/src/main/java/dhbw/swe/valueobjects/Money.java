@@ -52,4 +52,12 @@ public final class Money {
         requireSameCurrency(other);
         return this.amount.compareTo(other.amount);
     }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
 }

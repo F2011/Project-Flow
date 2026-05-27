@@ -28,6 +28,10 @@ public class Room extends Resource {
         return this.size >= amountEmployees;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public Money getCostsPerHour() {
         return this.costsPerHour;
     }
