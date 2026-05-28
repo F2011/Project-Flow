@@ -47,7 +47,6 @@ public class Project {
     }
 
     public void addReservation(Reservation reservation) {
-        // TODO add checks
         reservations.add(reservation);
     }
 
