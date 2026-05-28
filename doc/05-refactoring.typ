@@ -14,8 +14,8 @@
 
 === Duplicated Code
 
-In `ReservationService.reserveResource` wird die Berechnung der Kosten einer Reservierung (Stunden × Stundensatz) zweimal implementiert (s. `ReservationService.java` in Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/domain/src/main/java/dhbw/swe/services/ReservationService.java")[f17b13d])
-#let duplication-code =```java
+In `ReservationService.reserveResource` wird die Berechnung der Kosten einer Reservierung (Stunden × Stundensatz) zweimal implementiert (s. `ReservationService.java` in Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/domain/src/main/java/dhbw/swe/services/ReservationService.java#L27")[f17b13d])
+#let duplication-code = ```java
 long hours = (long) Math.ceil(timeRange.getDuration().toMinutes() / 60.0);
 Money reservationCost = resource.getCostsPerHour().multiply((int) hours);
 Money alreadyAllocated = project.getReservations().stream().map(r -> {
@@ -28,51 +28,47 @@ Beide Stellen berechnen identisch `ceil(duration.toMinutes() / 60.0)` und rufen 
 
 === Long Method
 
-`ReservationService.reserveResource` vereint drei eigenständige fachliche Prüfungen in einer einzigen Methode:
+`ReservationService.reserveResource` vereint drei eigenständige fachliche Prüfungen in einer einzigen Methode (s. `ReservationService.java` Zeile 13–42, Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/domain/src/main/java/dhbw/swe/services/ReservationService.java#L13")[f17b13d]):
 
-- Verfügbarkeitsprüfung: Ist die Ressource im Zeitraum frei?
-- Qualifikationsprüfung: Hat der Mitarbeiter die erforderlichen Qualifikationen?
-- Budgetprüfung: Übersteigen die Gesamtkosten das Projektbudget?
+- Verfügbarkeitsprüfung (Zeile 14–17): Ist die Ressource im Zeitraum frei?
+- Qualifikationsprüfung (Zeile 19–26): Hat der Mitarbeiter die erforderlichen Qualifikationen?
+- Budgetprüfung (Zeile 28–36): Übersteigen die Gesamtkosten das Projektbudget?
 
 Jeder Block ist semantisch abgeschlossen. Die Komplexität erschwert Verständlichkeit und Testbarkeit, da alle drei Pfade gemeinsam getestet werden müssen.
 
-=== Duplicated Code: Feld `costsPerHour` in Subklassen
+=== Inappropriate Intimacy
 
-`Employee` und `Room` deklarieren beide unabhängig voneinander das Feld `costsPerHour` und implementieren jeweils die Methode `getCostsPerHour()`:
+`CompanyController` hängt direkt von der konkreten Infrastrukturklasse `CompanyRepositoryAdapter` ab, anstatt das Port-Interface `CompanyRepository` zu verwenden (s. `CompanyController.java` Zeile 25–30, Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/plugins/src/main/java/dhbw/swe/plugins/web/CompanyController.java#L24")[f17b13d]):
 
-#let costs-employee-code = ```java
-// Employee.java
-private Money costsPerHour;
-public Money getCostsPerHour() { return costsPerHour; }
+#let intimacy-code = ```java
+private final CompanyRepositoryAdapter companyRepository;
+...
+
+public CompanyController(CompanyRepositoryAdapter companyRepository,
+        ...) {
+    this.companyRepository = companyRepository;
 ```
-#let costs-room-code = ```java
-// Room.java
-private Money costsPerHour;
-public Money getCostsPerHour() { return costsPerHour; }
+#zebraw(numbering-offset: 24, intimacy-code)
+
+Ein Controller (Peripherie) kennt damit die interne Implementierung der Persistenzschicht. Das verletzt das Dependency Inversion Principle: Die höhere Schicht sollte nur vom Interface abhängen. Außerdem bricht es die Clean-Architecture-Regel, dass `web` und `persistence` voneinander unabhängige Adapter sind.
+
+=== Switch Statements
+
+In `DomainMapper` wird die Fallunterscheidung nach Ressourcentyp (`Employee` vs. `Room`) zweimal mit identischer `instanceof`-Kette implementiert – in `toDomainResource` (Zeile 30–45) und in `toJpaResource` (Zeile 102–123), Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/plugins/src/main/java/dhbw/swe/plugins/persistence/DomainMapper.java#L30")[f17b13d]:
+
+#let switch-code-1 = ```java
+if (e instanceof EmployeeJpaEntity emp) { ... return new Employee(...); }
+if (e instanceof RoomJpaEntity room)    { ... return new Room(...); }
+throw new IllegalStateException(...);
 ```
-#zebraw(costs-employee-code)
-#zebraw(costs-room-code)
-
-Da `getCostsPerHour()` bereits als abstrakte Methode in `Resource` deklariert ist und beide Subklassen sie identisch implementieren, ist das Feld in beiden Klassen redundant. Änderungen an der Kostenlogik müssen an zwei Stellen gepflegt werden. Abhilfe: Feld und Implementierung in die Basisklasse `Resource` hochziehen (Pull Up Field / Pull Up Method).
-
-=== Duplicated Code: Budget-Prüfung in `Company` und `Project`
-
-Die gleiche Budget-Akkumulierungslogik – alle bestehenden Budgets summieren, das neue hinzuaddieren, mit dem Gesamtbudget vergleichen – erscheint sowohl in `Company.createProject` als auch in `Project.createSubProject`:
-
-#let budget-company-code = ```java
-// Company.java, Zeile 27–30
-Money allocated = projects.stream()
-        .map(Project::getBudget)
-        .reduce(projectMoney, Money::add);
-if (allocated.compareTo(budget) > 0) { ... }
+#let switch-code-2 = ```java
+if (resource instanceof Employee emp) { ... return employeeEntity; }
+if (resource instanceof Room room)    { ... return roomEntity; }
+throw new IllegalStateException(...);
 ```
-#let budget-project-code = ```java
-// Project.java, Zeile 36–37
-if (this.subProjects.stream().map((Project p) -> p.getBudget())
-        .reduce(budget, Money::add).compareTo(this.budget) > 0) { ... }
-```
-#zebraw(budget-company-code)
-#zebraw(budget-project-code)
+#zebraw(numbering-offset: 29, switch-code-1)
+#zebraw(numbering-offset: 101, switch-code-2)
 
-Beide Stellen lösen dasselbe Problem: Überschreitet das neue Budget zusammen mit den bereits vergebenen Budgets das Limit? Wird die Logik geändert (z. B. reserviertes statt vergebenes Budget berücksichtigen), muss sie an beiden Stellen angepasst werden. Abhilfe: Extract Method `exceedsBudget(List<Money> allocated, Money newBudget, Money limit) : boolean`, die von beiden Klassen aufgerufen wird.
+Jede neue Ressourcenart (z. B. wenn man Fahrzeuge einführen wollte) erfordert Änderungen an beiden Methoden.\
+Mögliche Lösung: Polymorphie ersetzt die Konditional-Struktur – die Konvertierungslogik wird in typspezifische Mapper-Klassen ausgelagert, sodass neue Typen ohne Änderung des bestehenden Codes ergänzt werden können.
 
