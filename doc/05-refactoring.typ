@@ -11,6 +11,7 @@
   - Orientieren Sie sich an den in der Vorlesung genannten Refactorings. Gerne dürfen Sie auch andere Refactorings aus seriösen Quellen verwenden, zum Beispiel https://refactoring.guru/refactoring/techniques
 
 == Code Smells
+Die Code Smells sind jeweils auf Commit #link("https://github.com/F2011/Project-Flow/tree/f17b13ddc76c0d98d322b0f47050cae21664aa2c")[f17b13d] gefunden worden und die beiden Code Smells _Duplicated Code_ und _Long Method_ wurden anschließend durch eine alternative Implementierung entfernt.
 
 === Duplicated Code
 
