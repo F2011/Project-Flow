@@ -1,7 +1,9 @@
 package dhbw.swe.plugins.persistence;
 
+import dhbw.swe.entities.Employee;
 import dhbw.swe.entities.Resource;
 import dhbw.swe.plugins.persistence.entity.CompanyJpaEntity;
+import dhbw.swe.plugins.persistence.entity.EmployeeJpaEntity;
 import dhbw.swe.plugins.persistence.entity.ReservationJpaEntity;
 import dhbw.swe.plugins.persistence.entity.ResourceJpaEntity;
 import dhbw.swe.plugins.persistence.spring.CompanyJpaRepository;
@@ -10,6 +12,7 @@ import dhbw.swe.ports.ResourceRepository;
 import dhbw.swe.valueobjects.Reservation;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,6 +49,14 @@ public class ResourceRepositoryAdapter implements ResourceRepository {
             }
             return resource;
         });
+    }
+
+    @Override
+    public List<Employee> findAllEmployees() {
+        return jpa.findAll().stream()
+                .filter(e -> e instanceof EmployeeJpaEntity)
+                .map(e -> (Employee) DomainMapper.toDomainResource(e))
+                .toList();
     }
 
     private CompanyJpaEntity findCompanyForResource(UUID resourceId) {

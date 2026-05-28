@@ -1,6 +1,7 @@
 package dhbw.swe.plugins.web;
 
 import dhbw.swe.entities.Employee;
+import dhbw.swe.ports.ResourceRepository;
 import dhbw.swe.usecases.AddQualificationUseCase;
 import dhbw.swe.usecases.HireEmployeeUseCase;
 import dhbw.swe.valueobjects.Money;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,11 +28,14 @@ public class EmployeeController {
 
     private final HireEmployeeUseCase hireEmployeeUseCase;
     private final AddQualificationUseCase addQualificationUseCase;
+    private final ResourceRepository resourceRepository;
 
     public EmployeeController(HireEmployeeUseCase hireEmployeeUseCase,
-            AddQualificationUseCase addQualificationUseCase) {
+            AddQualificationUseCase addQualificationUseCase,
+            ResourceRepository resourceRepository) {
         this.hireEmployeeUseCase = hireEmployeeUseCase;
         this.addQualificationUseCase = addQualificationUseCase;
+        this.resourceRepository = resourceRepository;
     }
 
     public record HireEmployeeRequest(String name, BigDecimal costsPerHourAmount,
@@ -41,6 +46,23 @@ public class EmployeeController {
             String costsPerHourCurrency, Set<String> qualifications) {}
 
     public record AddQualificationRequest(String qualification) {}
+
+    @GetMapping("/employees")
+    @Operation(summary = "Get all employees")
+    public ResponseEntity<List<EmployeeResponse>> getAll() {
+        List<EmployeeResponse> employees = resourceRepository.findAllEmployees().stream()
+                .map(this::toResponse).toList();
+        return ResponseEntity.ok(employees);
+    }
+
+    @GetMapping("/employees/{employeeId}")
+    @Operation(summary = "Get an employee by ID")
+    public ResponseEntity<EmployeeResponse> getById(@PathVariable UUID employeeId) {
+        return resourceRepository.findById(employeeId)
+                .filter(r -> r instanceof Employee)
+                .map(r -> ResponseEntity.ok(toResponse((Employee) r)))
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PostMapping("/companies/{companyId}/employees")
     @Operation(summary = "Hire an employee for a company")
