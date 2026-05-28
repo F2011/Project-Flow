@@ -1,13 +1,6 @@
 #let rule(body) = text(style: "italic", body)
 
 = Domain Driven Design
-- Analyse der Ubiquitous Language
-  - Analysieren Sie die Fachlichkeit Ihrer Problemdomäne, indem Sie die relevanten Begriffe und deren *fachliche Bedeutung, Aufgaben und Regeln dokumentieren*
-- Verwendung taktischer Muster des DDD:
-  - Alle genannten Muster des DDD sind im Source Code zu verwenden (Value Objects, Entities, Aggregates, Repositories, Domain Services)
-- Analyse und Begründung der verwendeten Muster
-  - Begründen Sie jedes einzelne, oben genannte Muster anhand von je einem konkreten Beispiel aus Ihrem Source Code
-  - „XX ist als Value Object implementiert, weil...“
 
 == Ubiquitous Language
 Die Fachlichkeit der Problemdomäne ist bereits in der Themenanmeldung angerissen und wird hier in Form von Definitionen der zentralen Begriffe spezifiziert:
@@ -41,8 +34,6 @@ Die Fachlichkeit der Problemdomäne ist bereits in der Themenanmeldung angerisse
 - zeitlich begrenzte Allokation einer Ressource
 - #rule[Funktioniert nur, wenn die Ressource im Zeitraum der Reservierung verfügbar ist]
 
-// === finanzieller Spielraum
-// - finanzieller Rahmen in einem bestimmten Zeitraum, der NICHT überschritten werden darf
 
 === Budget
 - finanzieller Rahmen auf Projektebene, der NICHT überschritten werden darf
