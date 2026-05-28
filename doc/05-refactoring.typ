@@ -1,14 +1,6 @@
 #import "@preview/zebraw:0.6.3": zebraw
 
 = Refactoring
-- Identifizieren, nennen und begründen Sie mindestens 4 Code Smells, die
-  - aktuell noch im Code existieren oder
-  - die Sie im Laufe der Entwicklung identifiziert und beseitigt haben (dann mit Verweis auf entsprechenden commit)
-  - Orientieren Sie sich an den in der Vorlesung genannten Smells, gerne auch andere Smells, zum Beispiel https://refactoring.guru/refactoring/smells\ #text(fill: red)[Achtung: vermeiden Sie “unused import”, “unused variable”, “parameter could be final” und ähnliche, “schwache” Smells]
-- Nennen und begründen Sie zwei konkrete Refactorings, die Sie entweder
-  - im Laufe des Projektes ausgeführt haben oder
-  - die Sie zur Verbesserung des Projektes am aktuellen Code durchführen würden.
-  - Orientieren Sie sich an den in der Vorlesung genannten Refactorings. Gerne dürfen Sie auch andere Refactorings aus seriösen Quellen verwenden, zum Beispiel https://refactoring.guru/refactoring/techniques
 
 == Code Smells
 Die Code Smells sind jeweils auf Commit #link("https://github.com/F2011/Project-Flow/tree/f17b13ddc76c0d98d322b0f47050cae21664aa2c")[f17b13d] gefunden worden und die beiden Code Smells _Duplicated Code_ und _Long Method_ wurden anschließend durch eine alternative Implementierung entfernt.
@@ -27,6 +19,8 @@ int h = (int) Math.ceil(r.getTimeRange().getDuration().toMinutes() / 60.0);
 
 Beide Stellen berechnen identisch `ceil(duration.toMinutes() / 60.0)` und rufen anschließend `getCostsPerHour().multiply(h)` auf.
 
+Behoben durch Extract Method: Die duplizierte Logik wurde in die private Methode `calculateCost(Resource, TimeRange)` extrahiert, die an beiden Stellen aufgerufen wird.
+
 === Long Method
 
 `ReservationService.reserveResource` vereint drei eigenständige fachliche Prüfungen in einer einzigen Methode (s. `ReservationService.java` Zeile 13–42, Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/domain/src/main/java/dhbw/swe/services/ReservationService.java#L13")[f17b13d]):
@@ -36,6 +30,8 @@ Beide Stellen berechnen identisch `ceil(duration.toMinutes() / 60.0)` und rufen 
 - Budgetprüfung (Zeile 28–36): Übersteigen die Gesamtkosten das Projektbudget?
 
 Jeder Block ist semantisch abgeschlossen. Die Komplexität erschwert Verständlichkeit und Testbarkeit, da alle drei Pfade gemeinsam getestet werden müssen.
+
+Behoben durch Extract Method: Jede Prüfung wurde in eine eigene private Methode extrahiert (`checkAvailability`, `checkQualifications`, `checkBudget`). `reserveResource` besteht damit nur noch aus drei lesbaren Methodenaufrufen.
 
 === Inappropriate Intimacy
 
