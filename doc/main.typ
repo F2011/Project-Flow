@@ -28,6 +28,7 @@
   // for more options check the package documentation (https://typst.app/universe/package/clean-dhbw)
 )
 
+#include "00-introduction.typ"
 #include "01-ddd.typ"
 #include "02-clean_architecture.typ"
 #include "03-programming_principles.typ"
@@ -36,4 +37,4 @@
 #include "06-design_patterns.typ"
 
 #set page(margin: 0pt)
-#include "00-themenanmeldung.typ"
+#include "07-themenanmeldung.typ"
