@@ -20,21 +20,18 @@ class GenerateReportUseCaseTest {
         Company company = s.createCompany();
         Employee employee = s.createEmployee(company);
         Project project = s.createProject(company);
-        BookResourceUseCase book = new BookResourceUseCase(
-                s.projectRepo, s.resourceRepo, s.reservationRepo, s.reservationService);
+        BookResourceUseCase book = new BookResourceUseCase(s.projectRepo, s.resourceRepo,
+                s.reservationRepo, s.reservationService);
         book.execute(project.getId(), employee.getId(), UseCaseTestSetup.RESERVATION_RANGE);
 
         GenerateReportUseCase report = new GenerateReportUseCase(s.resourceRepo);
 
-        // query covering the reservation — must return it
-        List<Reservation> inRange = report.execute(employee.getId(),
-                UseCaseTestSetup.PROJECT_DURATION);
+        List<Reservation> inRange =
+                report.execute(employee.getId(), UseCaseTestSetup.PROJECT_DURATION);
         assertEquals(1, inRange.size());
         assertEquals(project, inRange.get(0).getProject());
 
-        // query entirely before the reservation — must return nothing
-        TimeRange beforeReservation = new TimeRange(
-                LocalDateTime.of(2026, 5, 1, 0, 0),
+        TimeRange beforeReservation = new TimeRange(LocalDateTime.of(2026, 5, 1, 0, 0),
                 LocalDateTime.of(2026, 5, 31, 23, 59));
         List<Reservation> outOfRange = report.execute(employee.getId(), beforeReservation);
         assertTrue(outOfRange.isEmpty());

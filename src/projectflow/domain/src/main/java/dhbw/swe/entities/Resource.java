@@ -12,7 +12,6 @@ public abstract class Resource {
     private UUID id;
     private String name;
     protected TimeRange availability;
-    // ordered List of reservations for this resource, sorted by start time
     protected SortedSet<Reservation> reservations;
 
     protected Resource(UUID id, String name, TimeRange availability) {
