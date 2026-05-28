@@ -49,6 +49,8 @@ public CompanyController(CompanyRepositoryAdapter companyRepository,
 
 Ein Controller (Peripherie) kennt damit die interne Implementierung der Persistenzschicht. Das verletzt das Dependency Inversion Principle: Die höhere Schicht sollte nur vom Interface abhängen. Außerdem bricht es die Clean-Architecture-Regel, dass `web` und `persistence` voneinander unabhängige Adapter sind.
 
+Behoben durch Ersetzen von `CompanyRepositoryAdapter` durch `CompanyRepository`.
+
 === Switch Statements
 
 In `DomainMapper` wird die Fallunterscheidung nach Ressourcentyp (`Employee` vs. `Room`) zweimal mit identischer `instanceof`-Kette implementiert – in `toDomainResource` (Zeile 30–45) und in `toJpaResource` (Zeile 102–123), Commit: #link("https://github.com/F2011/Project-Flow/blob/f17b13ddc76c0d98d322b0f47050cae21664aa2c/src/projectflow/plugins/src/main/java/dhbw/swe/plugins/persistence/DomainMapper.java#L30")[f17b13d]:

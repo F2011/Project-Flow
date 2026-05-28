@@ -3,7 +3,6 @@ package dhbw.swe.plugins.web;
 import dhbw.swe.usecases.BookResourceUseCase;
 import dhbw.swe.usecases.CancelReservationUseCase;
 import dhbw.swe.usecases.GenerateReportUseCase;
-import dhbw.swe.valueobjects.Reservation;
 import dhbw.swe.valueobjects.TimeRange;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,10 +32,12 @@ public class ReservationController {
     }
 
     public record BookResourceRequest(UUID resourceId, LocalDateTime timeStart,
-            LocalDateTime timeEnd) {}
+            LocalDateTime timeEnd) {
+    }
 
     public record ReservationResponse(UUID resourceId, String resourceName, UUID projectId,
-            LocalDateTime timeStart, LocalDateTime timeEnd) {}
+            LocalDateTime timeStart, LocalDateTime timeEnd) {
+    }
 
     @PostMapping("/projects/{projectId}/reservations")
     @Operation(summary = "Book a resource for a project")
@@ -61,13 +62,12 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponse>> report(@PathVariable UUID resourceId,
             @RequestParam LocalDateTime from, @RequestParam LocalDateTime to) {
         TimeRange timeRange = new TimeRange(from, to);
-        List<ReservationResponse> result = generateReportUseCase.execute(resourceId, timeRange)
-                .stream()
-                .map(r -> new ReservationResponse(
-                        r.getResource().getId(), r.getResource().getName(),
-                        r.getProject().getId(),
-                        r.getTimeRange().getStart(), r.getTimeRange().getEnd()))
-                .toList();
+        List<ReservationResponse> result =
+                generateReportUseCase.execute(resourceId, timeRange).stream()
+                        .map(r -> new ReservationResponse(r.getResource().getId(),
+                                r.getResource().getName(), r.getProject().getId(),
+                                r.getTimeRange().getStart(), r.getTimeRange().getEnd()))
+                        .toList();
         return ResponseEntity.ok(result);
     }
 }
