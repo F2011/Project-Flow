@@ -8,3 +8,5 @@ Die Unit Tests erfüllen die ATRIP-Regeln: Sie sind:
 / Professional,: da Testnamen das erwartete Verhalten beschreiben (z. B. `execute_createsReservationOnProjectAndResource`).
 
 Mocks sind enthalten, da die PostgreSQL-Datenbank von einer In-Memory-Implementierungen ersetzt wird.
+
+Unit-Tests für die Use-Cases wurden nicht geschrieben, um sie vollständig abzudecken, sondern um spätere Änderungen sofort sichtbar zu machen (falls der Happy-Path verletzt wird). Als relevante Unit-Tests sind nur die Domain-Unit-Tests zu sehen.
