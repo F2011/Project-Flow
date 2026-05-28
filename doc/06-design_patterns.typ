@@ -1,7 +1,8 @@
 #import "@preview/note-me:0.6.0": *
 
 = Design Patterns
-== Strategy Pattern: Repository-Interfaces als austauschbare Persistenzstrategie
+== Strategy Pattern
+Repository-Interfaces als austauschbare Persistenzstrategie
 
 === Einsatz im Code
 

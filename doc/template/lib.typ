@@ -183,7 +183,7 @@
     outline(
       title: TABLE_OF_CONTENTS.at(language),
       indent: auto,
-      depth: 3,
+      depth: 2,
     )
   }
 
