@@ -1,4 +1,7 @@
 #import "template/lib.typ": *
+#import "@preview/zebraw:0.6.3": zebraw, zebraw-init
+#show: zebraw-init.with(numbering: true)
+#show: zebraw
 
 #show: clean-dhbw.with(
   title: "Thema: Project Flow",
