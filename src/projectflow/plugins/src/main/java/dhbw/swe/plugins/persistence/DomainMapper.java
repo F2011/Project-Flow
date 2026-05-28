@@ -7,6 +7,7 @@ import dhbw.swe.entities.Resource;
 import dhbw.swe.entities.Room;
 import dhbw.swe.plugins.persistence.entity.*;
 import dhbw.swe.valueobjects.Money;
+import org.hibernate.Hibernate;
 import dhbw.swe.valueobjects.Qualification;
 import dhbw.swe.valueobjects.Reservation;
 import dhbw.swe.valueobjects.TimeRange;
@@ -27,6 +28,7 @@ public class DomainMapper {
     }
 
     public static Resource toDomainResource(ResourceJpaEntity e) {
+        e = (ResourceJpaEntity) Hibernate.unproxy(e);
         if (e instanceof EmployeeJpaEntity emp) {
             Set<Qualification> quals = emp.getQualifications().isEmpty()
                     ? EnumSet.noneOf(Qualification.class)

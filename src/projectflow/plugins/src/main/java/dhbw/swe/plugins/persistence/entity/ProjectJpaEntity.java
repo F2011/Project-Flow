@@ -38,12 +38,14 @@ public class ProjectJpaEntity {
     private ProjectJpaEntity parentProject;
 
     @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderColumn(name = "subproject_order")
     private List<ProjectJpaEntity> subProjects = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "project_required_qualifications",
             joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "qualification")
+    @OrderColumn(name = "qualification_order")
     private List<String> requiredQualifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
